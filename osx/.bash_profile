@@ -11,3 +11,9 @@ pushd () {
 popd () {
     command popd "$@" > /dev/null
 }
+
+# If you would like to provide specialized instructions that will not be overwritten by an install,
+# put those into ~/.external_profile
+if [ -f ~/.external_profile ]; then
+    source ~/.external_profile
+fi
