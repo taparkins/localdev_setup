@@ -9,6 +9,7 @@ popd () {
 }
 
 cp .bash_profile ~/.bash_profile
+./_setup_git_autocomplete.sh
 ./_setup_vim.sh
 
 pushd ../helpers/

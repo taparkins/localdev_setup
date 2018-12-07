@@ -3,6 +3,8 @@ export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
 alias ls='ls -GFh'
 
+[ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
+
 pushd () {
     command pushd "$@" > /dev/null
 }
