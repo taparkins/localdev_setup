@@ -11,6 +11,7 @@ popd () {
 cp .bash_profile ~/.bash_profile
 ./_setup_git_autocomplete.sh
 ./_setup_vim.sh
+./_setup_keybindings.sh
 
 pushd ../helpers/
 ./_install_helpers.sh
