@@ -1,14 +1,17 @@
 DOWNLOAD_LINK="https://download.mozilla.org/?product=firefox-latest-ssl&os=osx&lang=en-US"
 DMG_FILE="/tmp/firefox.dmg"
 MOUNT_LOCATION="/Volumes/Firefox"
-APP_LOCATION="$MOUNT_LOCATION/Firefox.app"
+APP_ORIGIN_LOCATION="$MOUNT_LOCATION/Firefox.app"
+APP_LOCATION="/Applications/Firefox.app"
 APP_EXE_LOCATION="${APP_LOCATION}/Contents/MacOS/firefox"
 
-if [[ ! -d ${APP_LOCATION} ]]; then
+if [[ ! -e ${APP_LOCATION} ]]; then
     wget $DOWNLOAD_LINK -O $DMG_FILE
     hdiutil attach $DMG_FILE
-    cp -r $APP_LOCATION /Applications
-    touch /Applications/Firefox.app
+    cp -r $APP_ORIGIN_LOCATION $APP_LOCATION
+    touch $APP_LOCATION
+    hdiutil detach $MOUNT_LOCATION
+    rm $DMG_FILE
 
     # add to dock
     defaults write com.apple.dock persistent-apps -array-add "\
@@ -28,36 +31,77 @@ if [[ ! -d ${APP_LOCATION} ]]; then
 fi
 
 # prep for Tree-Based Tab: remove top-level tab bar
-# TODO: for some reason this wasn't working either :(
-#PROFILE_DIR="$HOME/Library/Application Support/Firefox/Profiles/"
-#PROFILE_DIR_NAME=`ls "${PROFILE_DIR}" | grep default$`
-#PROFILE_DIR="${PROFILE_DIR}/${PROFILE_DIR_NAME}"
-#if [[ ! -d "${PROFILE_DIR}/chrome" ]]; then
-#  mkdir "${PROFILE_DIR}/chrome"
-#fi
-#if [[ ! -f "${PROFILE_DIR}/chrome/userChrome.css" ]]; then
-#  touch "${PROFILE_DIR}/chrome/userChrome.css"
-#  echo "#TabsToolbar { visibility: collapse !important; }" > "${PROFILE_DIR}/chrome/userChrome.css"
-#fi
+PROFILE_DIR="$HOME/Library/Application Support/Firefox/Profiles/"
+PROFILE_DIR_NAME=`ls "${PROFILE_DIR}" | grep default-release$`
+PROFILE_DIR="${PROFILE_DIR}/${PROFILE_DIR_NAME}"
+
+while [[ ! -d "${PROFILE_DIR}" ]]
+do
+    echo "******************************************************"
+    echo "Further setup requires starting firefox at least once."
+    echo "******************************************************"
+    nohup ${APP_EXE_LOCATION} &
+    sleep 5
+done
+
+if [[ ! -d "${PROFILE_DIR}/chrome" ]]; then
+  mkdir "${PROFILE_DIR}/chrome"
+fi
+if [[ ! -f "${PROFILE_DIR}/chrome/userChrome.css" ]]; then
+  touch "${PROFILE_DIR}/chrome/userChrome.css"
+  echo "#TabsToolbar { visibility: collapse; }" > "${PROFILE_DIR}/chrome/userChrome.css"
+fi
+
+if [[ ! -f "${PROFILE_DIR}/prefs.js" ]]; then
+    touch "${PROFILE_DIR}/prefs.js"
+fi
+ENABLE_USERCHROME_PREF="toolkit.legacyUserProfileCustomizations.stylesheets"
+USERCHROME_ENABLED=`cat "${PROFILE_DIR}/prefs.js" | grep ${ENABLE_USERCHROME_PREF}`
+if [[ -z ${USERCHROME_ENABLED} ]]; then
+    echo "user_pref(\"${ENABLE_USERCHROME_PREF}\", true);" >> "${PROFILE_DIR}/prefs.js"
+fi
 
 # setup my extensions
-# TODO: This isn't quite working
-#EXTENSION_URLS=(\
-#  "https://addons.mozilla.org/firefox/downloads/file/3339183/tree_style_tab-3.1.5-fx.xpi?src=dp-btn-primary" \
-#  "https://addons.mozilla.org/firefox/downloads/file/3361355/ublock_origin-1.21.2-an+fx.xpi?src=dp-btn-primary" \
-#)
-#EXTENSION_FILES=()
-#i=0
-#for URL in "${EXTENSION_URLS[@]}"
-#do
-#  EXTENSION_FILE="/tmp/extension${i}.xpi"
-#  EXTENSION_FILES+=($EXTNESION_FILE)
-#  wget ${URL} -O $EXTENSION_FILE
-#  i=${i+1}
-#done
-#${APP_EXE_LOCATION} ${EXTENSION_FILES[@]}
-#echo ${EXTENSION_FILES[@]} | xargs rm
+EXTENSION_URLS=(\
+  "https://addons.mozilla.org/firefox/downloads/file/3339183/tree_style_tab-3.1.5-fx.xpi?src=dp-btn-primary" \
+  "https://addons.mozilla.org/firefox/downloads/file/3361355/ublock_origin-1.21.2-an+fx.xpi?src=dp-btn-primary" \
+)
+EXTENSION_FILES=(\
+  "treestyletab@piro.sakura.ne.jp.xpi" \
+  "uBlock0@raymondhill.net.xpi" \
+)
+NEEDS_INSTALL=()
+i=0
+for URL in "${EXTENSION_URLS[@]}"
+do
+  EXTENSION_FILE="${PROFILE_DIR}/extensions/${EXTENSION_FILES[i]}"
+  if [[ ! -f "${EXTENSION_FILE}" ]]; then
+      NEEDS_INSTALL+=($URL)
+  fi
+  i=${i+1}
+done
 
-# clean up after ourselves :)
-hdiutil detach $MOUNT_LOCATION
-rm $DMG_FILE
+if [[ ! -z $NEEDS_INSTALL ]]; then
+    echo "******************************************************"
+    echo "We detected some uninstalled extensions."
+    echo "Unfortunately, this will also require manual steps."
+    echo "For each extension you do not have installed, we will"
+    echo "launch a browser tab to install it."
+    echo "Just click \"yes\" when prompted in the browser."
+    echo "******************************************************"
+    if [[ -z `ps aux | grep [F]irefox.app` ]]; then
+        nohup ${APP_EXE_LOCATION} &
+        sleep 5
+    fi
+
+    for URL in "${NEEDS_INSTALL[@]}"
+    do
+        echo ${URL}
+        ${APP_EXE_LOCATION} -new-tab ${URL}
+    done
+    read -p "Press RETURN when you are finished..."
+fi
+
+if [[ -f nohup.out ]]; then
+    rm nohup.out
+fi
