@@ -32,8 +32,6 @@ fi
 
 # prep for Tree-Based Tab: remove top-level tab bar
 PROFILE_DIR="$HOME/Library/Application Support/Firefox/Profiles/"
-PROFILE_DIR_NAME=`ls "${PROFILE_DIR}" | grep default-release$`
-PROFILE_DIR="${PROFILE_DIR}/${PROFILE_DIR_NAME}"
 
 while [[ ! -d "${PROFILE_DIR}" ]]
 do
@@ -44,6 +42,8 @@ do
     sleep 5
 done
 
+PROFILE_DIR_NAME=`ls "${PROFILE_DIR}" | grep default-release$`
+PROFILE_DIR="${PROFILE_DIR}/${PROFILE_DIR_NAME}"
 if [[ ! -d "${PROFILE_DIR}/chrome" ]]; then
   mkdir "${PROFILE_DIR}/chrome"
 fi
@@ -100,6 +100,14 @@ if [[ ! -z $NEEDS_INSTALL ]]; then
         ${APP_EXE_LOCATION} -new-tab ${URL}
     done
     read -p "Press RETURN when you are finished..."
+
+    echo "******************************************************"
+    echo "Also, be sure to check the firefoxConfigs/ directory."
+    echo "These will have importable configs for the installed"
+    echo "extensions."
+    echo "******************************************************"
+    read -p "Press RETURN when this is done..."
+
 fi
 
 if [[ -f nohup.out ]]; then

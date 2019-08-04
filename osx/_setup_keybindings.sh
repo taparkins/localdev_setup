@@ -1,10 +1,13 @@
 #!/bin/bash
 
 BINDINGS_FILE=DefaultKeyBinding.dict
-BINDINGS_DIR=~/Library/KeyBindings
+BINDINGS_DIR=${HOME}/Library/KeyBindings
 
+if [[ ! -d ${BINDINGS_DIR} ]]; then
+    mkdir -p ${BINDINGS_DIR}
+fi
 if [[ ! -f ${BINDINGS_DIR}/${BINDINGS_FILE} ]]; then
-    mkdir -p ${BINDINGS_DIR} && touch ${BINDINGS_FILE}
+    touch ${BINDINGS_DIR}/${BINDINGS_FILE}
 fi
 
 ARE_DIFF=$(diff -q ${BINDINGS_DIR}/${BINDINGS_FILE} ${BINDINGS_FILE})
