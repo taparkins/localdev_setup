@@ -55,11 +55,6 @@ fi
 if [[ ! -f "${PROFILE_DIR}/prefs.js" ]]; then
     touch "${PROFILE_DIR}/prefs.js"
 fi
-ENABLE_USERCHROME_PREF="toolkit.legacyUserProfileCustomizations.stylesheets"
-USERCHROME_ENABLED=`cat "${PROFILE_DIR}/prefs.js" | grep ${ENABLE_USERCHROME_PREF}`
-if [[ -z ${USERCHROME_ENABLED} ]]; then
-    echo "user_pref(\"${ENABLE_USERCHROME_PREF}\", true);" >> "${PROFILE_DIR}/prefs.js"
-fi
 
 # setup my extensions
 EXTENSION_URLS=(\
@@ -109,6 +104,34 @@ if [[ ! -z $NEEDS_INSTALL ]]; then
     read -p "Press RETURN when this is done..."
 
 fi
+
+echo "******************************************************"
+echo "Don't worry, we just need Firefox to be off for this."
+echo "******************************************************"
+ps -ax | grep "[F]irefox" | awk '{ print $1 }' | xargs kill
+
+ENABLE_PREFS=( \
+    "browser.ctrlTab.recentlyUsedOrder" \
+    "toolkit.legacyUserProfileCustomizations.stylesheets" \
+)
+PREF_VALUES=( \
+    "false" \
+    "true" \
+)
+i=0
+cp  "${PROFILE_DIR}/prefs.js" "/tmp/prefs.js"
+for CHECK_PREF in ${ENABLE_PREFS[@]}
+do
+    PREF_VALUE=${PREF_VALUES[i]}
+    PREF_CORRECT=`cat "${PROFILE_DIR}/prefs.js" | grep ${CHECK_PREF} | grep ${PREF_VALUE}`
+    if [[ -z ${PREF_CORRECT} ]]; then
+        sed '/${CHECK_PREF}/d' "/tmp/prefs.js" > "/tmp/prefs2.js"
+        mv "/tmp/prefs2.js" "/tmp/prefs.js"
+        echo "user_pref(\"${CHECK_PREF}\", ${PREF_VALUE});" >> "/tmp/prefs.js"
+    fi
+    i=${i+1}
+done
+mv "/tmp/prefs.js" "${PROFILE_DIR}/prefs.js"
 
 if [[ -f nohup.out ]]; then
     rm nohup.out
