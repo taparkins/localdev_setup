@@ -7,3 +7,6 @@ set whichwrap=""
 if has("clipboard")
     set clipboard=unnamed
 endif
+
+" Several configs set default folding, which is annoying as hell.
+set foldlevelstart=99
