@@ -58,7 +58,7 @@ fi
 
 # setup my extensions
 EXTENSION_URLS=(\
-  "https://addons.mozilla.org/firefox/downloads/file/3339183/tree_style_tab-3.1.5-fx.xpi?src=dp-btn-primary" \
+  "https://addons.mozilla.org/firefox/downloads/file/3857925/tree_style_tab-3.8.15-fx.xpi?src=dp-btn-primary" \
   "https://addons.mozilla.org/firefox/downloads/file/3361355/ublock_origin-1.21.2-an+fx.xpi?src=dp-btn-primary" \
 )
 EXTENSION_FILES=(\
@@ -97,9 +97,7 @@ if [[ ! -z $NEEDS_INSTALL ]]; then
     read -p "Press RETURN when you are finished..."
 
     echo "******************************************************"
-    echo "Also, be sure to check the firefoxConfigs/ directory."
-    echo "These will have importable configs for the installed"
-    echo "extensions."
+    echo "Also, be sure to configure your extensions We'll wait."
     echo "******************************************************"
     read -p "Press RETURN when this is done..."
 
