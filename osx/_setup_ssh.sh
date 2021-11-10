@@ -7,7 +7,7 @@ if [[ ! -f ${SSH_FILE} ]]; then
 
     eval "$(ssh-agent -s)"
     cp ssh-config ${SSH_CONFIG_FILE}
-    ssh-add -K ${SSH_FILE}
+    ssh-add --apple-use-keychain ${SSH_FILE}
 
     pbcopy < "${SSH_FILE}.pub"
     echo "Your public key has been copied to the clipboard."

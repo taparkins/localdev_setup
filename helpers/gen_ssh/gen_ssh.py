@@ -19,7 +19,8 @@ def create_key(passphrase, key_path):
 def register_key(key_path):
     call([
         'ssh-add',
-        '-K', key_path,
+        '--apple-use-keychain',
+        key_path,
     ])
 
 
