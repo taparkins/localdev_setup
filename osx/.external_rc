@@ -1,0 +1,39 @@
+# rc version checker to allow updates in the future
+export LOCALDEV_ZSHRC_VERSION=1
+
+# set terminal prompt + colors
+export PROMPT="%F{081}%n%F{069}@%F{219}%M%F{207}:%B%F{015}%~ %f%b$ "
+
+# setup ls to use nice colors
+eval $(gdircolors ~/.dircolors)
+alias ls='gls --color=auto'
+alias ll='ls -al'
+
+# nicer pushd/popd
+pushd () {
+    command pushd "$@" > /dev/null
+}
+popd () {
+    command popd "$@" > /dev/null
+}
+
+# Auto venv :3
+VENV_DIR=venv
+function chpwd {
+  if [[ -z "$VIRTUAL_ENV" ]] ; then
+    ## If env folder is found then activate the vitualenv
+      if [[ -d "./$VENV_DIR" ]] ; then
+        source "./$VENV_DIR/bin/activate"
+      fi
+  else
+    ## check the current folder belong to earlier VIRTUAL_ENV folder
+    # if yes then do nothing
+    # else deactivate
+      parentdir="$(dirname "$VIRTUAL_ENV")"
+      if [[ "$PWD"/ != "$parentdir"/* ]] ; then
+        deactivate
+      fi
+  fi
+}
+
+chpwd
