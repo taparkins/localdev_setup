@@ -2,7 +2,7 @@
 export LOCALDEV_ZSHRC_VERSION=1
 
 # set terminal prompt + colors
-export PROMPT="%F{081}%n%F{069}@%F{219}%M%F{207}:%B%F{015}%~ %f%b$ "
+export PROMPT="%B%F{081}%3~ %F{015}> %b%f"
 
 # setup ls to use nice colors
 eval $(gdircolors ~/.dircolors)
