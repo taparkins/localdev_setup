@@ -1,11 +1,11 @@
 #!/bin/bash
 
 if [[ -z `git config --list | grep user.email` ]]; then
-    git config --global user.email "aric.parkinson@gmail.com"
+    git config --global user.email "talia.parkinson@gmail.com"
 fi
 
 if [[ -z `git config --list | grep user.name` ]]; then
-    git config --global user.name "Aric Parkinson"
+    git config --global user.name "Talia Parkinson"
 fi
 
 if [[ -z `git config --list | grep init.defaultBranch` ]]; then
