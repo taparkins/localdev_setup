@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+
+
 BINDINGS_FILE=DefaultKeyBinding.dict
 BINDINGS_DIR=${HOME}/Library/KeyBindings
 

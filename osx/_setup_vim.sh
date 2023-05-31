@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+
+
 # Install version with clipboard support
 HAS_VIM=$(brew ls --versions vim)
 HAS_CLIPBOARD=$([[ ! -z ${HAS_VIM} ]] && echo $(vim --version | grep +clipboard))

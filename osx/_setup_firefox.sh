@@ -1,3 +1,8 @@
+#!/bin/bash
+
+set -e
+
+
 DOWNLOAD_LINK="https://download.mozilla.org/?product=firefox-latest-ssl&os=osx&lang=en-US"
 DMG_FILE="/tmp/firefox.dmg"
 MOUNT_LOCATION="/Volumes/Firefox"

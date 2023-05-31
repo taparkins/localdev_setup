@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+
+
 if [[ -z `git config --list | grep user.email` ]]; then
     git config --global user.email "talia.parkinson@gmail.com"
 fi

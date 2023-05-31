@@ -1,3 +1,8 @@
+#!/bin/bash
+
+set -e
+
+
 CURRENT_ZSHRC_VERSION=1
 
 if [[ -z "$LOCALDEV_ZSHRC_VERSION" ]]; then

@@ -1,3 +1,8 @@
+#!/bin/bash
+
+set -e
+
+
 OLD_SSH_FILE=${HOME}/.ssh/id_rsa
 NEW_SSH_FILE=${HOME}/.ssh/id_localdev
 SSH_CONFIG_FILE=${HOME}/.ssh/config
