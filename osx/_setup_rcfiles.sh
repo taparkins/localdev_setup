@@ -9,14 +9,7 @@ if [[ -z "$LOCALDEV_ZSHRC_VERSION" ]]; then
     cat .zshrc >> ~/.zshrc
 fi
 
-HAS_COREUTILS=$(brew ls --versions coreutils)
-if [[ -z ${HAS_COREUTILS} ]]; then
-    brew install coreutils
-fi
-
-if [[ ! -d "~/.dircolors" ]]; then
-    git clone https://github.com/gibbling666/dircolors.git ~/.dircolors
-fi
+brew install coreutils
 
 if [[ "$LOCALDEV_ZSHRC_VERSION" != "$CURRENT_ZSHRC_VERSION" ]]; then
     cp .dircolors ~/.dircolors
