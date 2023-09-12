@@ -17,6 +17,9 @@ popd () {
     command popd "$@" > /dev/null
 }
 
+# setup git autocomplete
+autoload -Uz compinit && compinit
+
 # Auto venv :3
 VENV_DIR=venv
 function chpwd {

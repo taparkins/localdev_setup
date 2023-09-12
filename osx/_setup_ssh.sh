@@ -16,13 +16,13 @@ elif [[ -f ${NEW_SSH_FILE} ]]; then
 fi
 
 echo "Creating ssh key. Please wait for further instructions..."
-ssh-keygen -t ed25519 -b 4096 -f ${SSH_FILE}
+ssh-keygen -t ed25519 -b 4096 -f ${NEW_SSH_FILE}
 
 eval "$(ssh-agent -s)"
 cp ssh-config ${SSH_CONFIG_FILE}
-ssh-add --apple-use-keychain ${SSH_FILE}
+ssh-add --apple-use-keychain ${NEW_SSH_FILE}
 
-pbcopy < "${SSH_FILE}.pub"
+pbcopy < "${NEW_SSH_FILE}.pub"
 echo "Your public key has been copied to the clipboard."
 echo "Please add it to Github!"
 read -p "Don't worry, I'll wait..." UNUSED
